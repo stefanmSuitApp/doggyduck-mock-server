@@ -1,0 +1,46 @@
+export const fuelPricings = {
+  items: [
+    {
+      id: '1',
+      no: 1,
+      dateOfBeginningOfValidity: '2025-01-13',
+      price: 100,
+      createdAt: '2025-01-23T14:30:45.123',
+      modifiedAt: '2025-01-23T14:30:45.123',
+      createdBy: 'admin',
+    },
+    {
+      id: '2',
+      no: 2,
+      dateOfBeginningOfValidity: '2025-01-13',
+      price: 110,
+      createdAt: '2025-01-23T14:30:45.123',
+      modifiedAt: '2025-01-23T14:30:45.123',
+      createdBy: 'admin',
+    },
+    {
+      id: '3',
+      no: 3,
+      dateOfBeginningOfValidity: '2025-01-13',
+      price: 120,
+      createdAt: '2025-01-23T14:30:45.123',
+      modifiedAt: '2025-01-23T14:30:45.123',
+      createdBy: 'admin',
+    },
+    {
+      id: '4',
+      no: 4,
+      dateOfBeginningOfValidity: '2025-01-13',
+      price: 130,
+      createdAt: '2025-01-23T14:30:45.123',
+      modifiedAt: '2025-01-23T14:30:45.123',
+      createdBy: 'admin',
+    },
+  ],
+  meta: {
+    currentPage: 1,
+    itemsPerPage: 10,
+    totalItems: 4,
+    totalPages: 1,
+  },
+};
