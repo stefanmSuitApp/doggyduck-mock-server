@@ -1,20 +1,20 @@
 export const nisPrices = {
   items: [
     {
-      derivative: 'Evro dizel - Rafinerija Pancevo',
-      unit: 'Din/lit',
+      derivative: "Evro dizel - Rafinerija Pancevo",
+      unit: "Din/lit",
       postponed: 180,
       advance: 178.2,
     },
     {
-      derivative: 'Evro dizel - Većina pogona',
-      unit: 'Din/lit',
+      derivative: "Evro dizel - Većina pogona",
+      unit: "Din/lit",
       postponed: 180,
       advance: 178.2,
     },
     {
-      derivative: 'Gasno ulje ekstra lako evro EL - Većina pogona',
-      unit: 'Din/lit',
+      derivative: "Gasno ulje ekstra lako evro EL - Većina pogona",
+      unit: "Din/lit",
       postponed: 177.96,
       advance: 176.16,
     },
