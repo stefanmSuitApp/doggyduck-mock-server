@@ -1,5 +1,5 @@
 export const meInfo = {
-  name: "Lazar Stankovic",
-  email: "admin@logitrack.com",
-  role: "Admin",
+  name: 'Lazar Stankovic',
+  email: 'admin@logitrack.com',
+  role: 'Admin',
 };
