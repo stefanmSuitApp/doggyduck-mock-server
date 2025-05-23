@@ -5,6 +5,7 @@ import { banks } from '../db/banks';
 import { bills } from '../db/bills';
 import { calculations } from '../db/calculations';
 import { clients } from '../db/clients';
+import { compensationDocuments } from '../db/compensation-documents';
 import { compensations } from '../db/compensations';
 import { containers } from '../db/containers';
 import { employeeExpenses } from '../db/employeeExpenses';
@@ -530,14 +531,14 @@ app.get('/api/tours/tours-list', (req: express.Request, res: express.Response) =
     return;
   }
 
-  const result = paginateFilterSort(tours.items, req.query, 'tourNumber');
+  const result = paginateFilterSort(tours.items, req.query, 'tours');
 
   res.json(result);
 });
 
-app.get('/api/tours/:tourId', (req: express.Request, res: express.Response) => {
-  const tourId = req.params.tourId;
-  const tour = tours.items.find((b) => b.id === tourId);
+app.get('/api/tours/get-by-id', (req: express.Request, res: express.Response) => {
+  const tourId = req.query.id as string;
+  const tour = tours.items[0].tours.find((t) => t.id === tourId);
   if (tour) {
     res.json(tour);
   } else {
@@ -545,103 +546,103 @@ app.get('/api/tours/:tourId', (req: express.Request, res: express.Response) => {
   }
 });
 
-app.post('/api/tours/create-tour', (req: express.Request, res: express.Response) => {
-  const {
-    status,
-    tourNumber,
-    date,
-    internationalTour,
-    invoiceNumber,
-    driver,
-    vehicle,
-    client,
-    description,
-    expenses,
-    amount,
-    documentation,
-    distributionType,
-    note,
-    invoiceAmount,
-    tourAmount,
-    kilometers,
-    deliveredDocumentation,
-  } = req.body;
-  const newTour = {
-    id: String(tours.items.length + 1),
-    no: tours.items.length + 1,
-    status,
-    tourNumber,
-    date,
-    internationalTour,
-    invoiceNumber,
-    driver,
-    vehicle,
-    client,
-    description,
-    expenses,
-    amount,
-    documentation,
-    distributionType,
-    note,
-    invoiceAmount,
-    tourAmount,
-    kilometers,
-    deliveredDocumentation,
-  };
-  tours.items.push(newTour);
-  res.status(201).json(newTour);
-});
+// app.post('/api/tours/create-tour', (req: express.Request, res: express.Response) => {
+//   const {
+//     status,
+//     tourNumber,
+//     date,
+//     inoTour,
+//     invoiceNumber,
+//     driver,
+//     vehicle,
+//     client,
+//     description,
+//     expenses,
+//     amount,
+//     documentation,
+//     distributionType,
+//     note,
+//     invoiceAmountInOriginalCurrency,
+//     amountInOriginalCurrency,
+//     tourLength,
+//     isDocumentBrought,
+//   } = req.body;
+//   const newTour = {
+//     id: String(tours.items.length + 1),
+//     no: tours.items.length + 1,
+//     status,
+//     tourNumber,
+//     date,
+//     inoTour,
+//     invoiceNumber,
+//     driver,
+//     vehicle,
+//     client,
+//     description,
+//     expenses,
+//     amount,
+//     documentation,
+//     distributionType,
+//     note,
+//     invoiceAmountInOriginalCurrency,
+//     amountInOriginalCurrency,
+//     tourLength,
+//     isDocumentBrought,
+//   };
+//   tours.items.push(newTour);
+//   res.status(201).json(newTour);
+// });
 
-app.put('/api/tours/update-tour', (req: express.Request, res: express.Response) => {
-  const {
-    id,
-    status,
-    tourNumber,
-    date,
-    internationalTour,
-    invoiceNumber,
-    driver,
-    vehicle,
-    client,
-    description,
-    expenses,
-    amount,
-    documentation,
-    distributionType,
-    note,
-    invoiceAmount,
-    tourAmount,
-    kilometers,
-    deliveredDocumentation,
-  } = req.body;
-  const tourIndex = tours.items.findIndex((b) => b.id === id);
-  if (tourIndex !== -1) {
-    tours.items[tourIndex] = {
-      ...tours.items[tourIndex],
-      status,
-      tourNumber,
-      date,
-      internationalTour,
-      invoiceNumber,
-      driver,
-      vehicle,
-      client,
-      description,
-      expenses,
-      amount,
-      documentation,
-      distributionType,
-      note,
-      invoiceAmount,
-      tourAmount,
-      kilometers,
-      deliveredDocumentation,
-    };
-    res.json(tours.items[tourIndex]);
-  } else {
-    res.status(404).json({ message: 'Tour not found.' });
-  }
-});
+// app.put('/api/tours/update-tour', (req: express.Request, res: express.Response) => {
+//   const {
+//     id,
+//     status,
+//     tourNumber,
+//     date,
+//     inoTour,
+//     invoiceNumber,
+//     driver,
+//     vehicle,
+//     client,
+//     description,
+//     expenses,
+//     amount,
+//     documentation,
+//     distributionType,
+//     note,
+//     invoiceAmountInOriginalCurrency,
+//     amountInOriginalCurrency,
+//     tourLength,
+//     isDocumentBrought,
+//   } = req.body;
+//   const tourIndex = tours.items.findIndex((b) => b.id === id);
+//   if (tourIndex !== -1) {
+//     tours.items[tourIndex] = {
+//       ...tours.items[tourIndex],
+//       status,
+//       tourNumber,
+//       date,
+//       inoTour,
+//       invoiceNumber,
+//       driver,
+//       vehicle,
+//       client,
+//       description,
+//       expenses,
+//       amount,
+//       documentation,
+//       distributionType,
+//       note,
+//       invoiceAmountInOriginalCurrency,
+//       amountInOriginalCurrency,
+//       tourLength,
+//       isDocumentBrought,
+//     };
+//     res.json(tours.items[tourIndex]);
+//   } else {
+//     res.status(404).json({ message: 'Tour not found.' });
+//   }
+// });
 
 app.get('/api/expenses/expenses-list', (req: express.Request, res: express.Response) => {
   if (expenses.items.length === 0) {
@@ -723,7 +724,7 @@ app.post('/api/fuels/create-fuel', (req: express.Request, res: express.Response)
     gasStation,
     description,
     total,
-    kilometers,
+    tourLength,
     consumption,
     distance,
     liters,
@@ -739,7 +740,7 @@ app.post('/api/fuels/create-fuel', (req: express.Request, res: express.Response)
     gasStation,
     description,
     total,
-    kilometers,
+    tourLength,
     consumption,
     distance,
     liters,
@@ -762,7 +763,7 @@ app.put('/api/fuels/update-fuel', (req: express.Request, res: express.Response) 
     gasStation,
     description,
     total,
-    kilometers,
+    tourLength,
     consumption,
     distance,
     liters,
@@ -779,7 +780,7 @@ app.put('/api/fuels/update-fuel', (req: express.Request, res: express.Response) 
       gasStation,
       description,
       total,
-      kilometers,
+      tourLength,
       consumption,
       distance,
       liters,
@@ -1147,6 +1148,61 @@ app.put('/api/compensations/update-compensation', (req: express.Request, res: ex
   }
 });
 
+app.get(
+  '/api/compensation-documents/compensation-document-list',
+  (req: express.Request, res: express.Response) => {
+    if (compensationDocuments.items.length === 0) {
+      res.status(404).json({ message: 'No compensation documents found.' });
+      return;
+    }
+
+    const result = paginateFilterSort(compensationDocuments.items, req.query, 'partner');
+
+    res.json(result);
+  }
+);
+
+app.post(
+  '/api/compensation-documents/create-compensation-document',
+  (req: express.Request, res: express.Response) => {
+    const { partner, invoice, bill, amount, compensated, compensationId } = req.body;
+    const newCompensationDocument = {
+      id: String(compensationDocuments.items.length + 1),
+      no: compensationDocuments.items.length + 1,
+      partner,
+      invoice,
+      bill,
+      amount,
+      compensated,
+      compensationId,
+    };
+    compensationDocuments.items.push(newCompensationDocument);
+    res.status(201).json(newCompensationDocument);
+  }
+);
+
+app.put(
+  '/api/compensation-documents/update-compensation-document',
+  (req: express.Request, res: express.Response) => {
+    const { id, partner, invoice, bill, amount, compensated, compensationId } = req.body;
+    const compensationDocumentIndex = compensationDocuments.items.findIndex((b) => b.id === id);
+    if (compensationDocumentIndex !== -1) {
+      compensationDocuments.items[compensationDocumentIndex] = {
+        ...compensationDocuments.items[compensationDocumentIndex],
+        partner,
+        invoice,
+        bill,
+        amount,
+        compensated,
+        compensationId,
+      };
+      res.json(compensationDocuments.items[compensationDocumentIndex]);
+    } else {
+      res.status(404).json({ message: 'Compensation document not found.' });
+    }
+  }
+);
+
 app.get('/api/bills/bills-list', (req: express.Request, res: express.Response) => {
   if (bills.items.length === 0) {
     res.status(404).json({ message: 'No bills found.' });
@@ -1170,7 +1226,7 @@ app.get('/api/bills/:billId', (req: express.Request, res: express.Response) => {
 
 app.post('/api/bills/create-bill', (req: express.Request, res: express.Response) => {
   const {
-    documentType,
+    documentName,
     deliver,
     date,
     currencyDate,
@@ -1180,11 +1236,12 @@ app.post('/api/bills/create-bill', (req: express.Request, res: express.Response)
     baseAmount,
     taxAmount,
     totalAmount,
+    description,
   } = req.body;
   const newBill = {
     id: String(bills.items.length + 1),
     no: bills.items.length + 1,
-    documentType,
+    documentName,
     deliver,
     date,
     currencyDate,
@@ -1194,6 +1251,7 @@ app.post('/api/bills/create-bill', (req: express.Request, res: express.Response)
     baseAmount,
     taxAmount,
     totalAmount,
+    description,
   };
   bills.items.push(newBill);
   res.status(201).json(newBill);
@@ -1202,7 +1260,7 @@ app.post('/api/bills/create-bill', (req: express.Request, res: express.Response)
 app.put('/api/bills/update-bill', (req: express.Request, res: express.Response) => {
   const {
     id,
-    documentType,
+    documentName,
     deliver,
     date,
     currencyDate,
@@ -1212,12 +1270,13 @@ app.put('/api/bills/update-bill', (req: express.Request, res: express.Response) 
     baseAmount,
     taxAmount,
     totalAmount,
+    description,
   } = req.body;
   const billIndex = bills.items.findIndex((b) => b.id === id);
   if (billIndex !== -1) {
     bills.items[billIndex] = {
       ...bills.items[billIndex],
-      documentType,
+      documentName,
       deliver,
       date,
       currencyDate,
@@ -1227,6 +1286,7 @@ app.put('/api/bills/update-bill', (req: express.Request, res: express.Response) 
       baseAmount,
       taxAmount,
       totalAmount,
+      description,
     };
     res.json(bills.items[billIndex]);
   } else {
@@ -1343,22 +1403,51 @@ app.get('/api/statements/:statementId', (req: express.Request, res: express.Resp
 });
 
 app.post('/api/statements/create-statement', (req: express.Request, res: express.Response) => {
-  const { statementNumber, bank, note, previousBalance, currentBalance } = req.body;
+  const {
+    statementNumber,
+    bank,
+    note,
+    accountNumber,
+    previousState,
+    newState,
+    debt,
+    demand,
+    previousBalance,
+    currentBalance,
+  } = req.body;
   const newStatement = {
     id: String(statements.items.length + 1),
     no: statements.items.length + 1,
     statementNumber,
     bank,
     note,
+    accountNumber,
+    previousState,
+    newState,
+    debt,
+    demand,
     previousBalance,
     currentBalance,
+    date: new Date().toISOString(),
   };
   statements.items.push(newStatement);
   res.status(201).json(newStatement);
 });
 
 app.put('/api/statements/update-statement', (req: express.Request, res: express.Response) => {
-  const { id, statementNumber, bank, note, previousBalance, currentBalance } = req.body;
+  const {
+    id,
+    statementNumber,
+    bank,
+    note,
+    accountNumber,
+    previousState,
+    newState,
+    debt,
+    demand,
+    previousBalance,
+    currentBalance,
+  } = req.body;
   const statementIndex = statements.items.findIndex((b) => b.id === id);
   if (statementIndex !== -1) {
     statements.items[statementIndex] = {
@@ -1366,8 +1455,14 @@ app.put('/api/statements/update-statement', (req: express.Request, res: express.
       statementNumber,
       bank,
       note,
+      accountNumber,
+      previousState,
+      newState,
+      debt,
+      demand,
       previousBalance,
       currentBalance,
+      date: new Date().toISOString(),
     };
     res.json(statements.items[statementIndex]);
   } else {
@@ -1375,7 +1470,7 @@ app.put('/api/statements/update-statement', (req: express.Request, res: express.
   }
 });
 
-app.get('/api/equipments/equipments-list', (req: express.Request, res: express.Response) => {
+app.get('/api/equipment/equipments-list', (req: express.Request, res: express.Response) => {
   if (equipments.items.length === 0) {
     res.status(404).json({ message: 'No equipments found.' });
     return;
@@ -1386,7 +1481,7 @@ app.get('/api/equipments/equipments-list', (req: express.Request, res: express.R
   res.json(result);
 });
 
-app.get('/api/equipments/:equipmentId', (req: express.Request, res: express.Response) => {
+app.get('/api/equipment/:equipmentId', (req: express.Request, res: express.Response) => {
   const equipmentId = req.params.equipmentId;
   const equipment = equipments.items.find((b) => b.id === equipmentId);
   if (equipment) {
@@ -1396,7 +1491,7 @@ app.get('/api/equipments/:equipmentId', (req: express.Request, res: express.Resp
   }
 });
 
-app.post('/api/equipments/create-equipment-item', (req: express.Request, res: express.Response) => {
+app.post('/api/equipment/create-equipment-item', (req: express.Request, res: express.Response) => {
   const { name } = req.body;
   const newEquipment = {
     id: String(equipments.items.length + 1),
@@ -1411,7 +1506,7 @@ app.post('/api/equipments/create-equipment-item', (req: express.Request, res: ex
   res.status(201).json(newEquipment);
 });
 
-app.put('/api/equipments/update-equipment-item', (req: express.Request, res: express.Response) => {
+app.put('/api/equipment/update-equipment-item', (req: express.Request, res: express.Response) => {
   const { id, name } = req.body;
   const equipmentIndex = equipments.items.findIndex((b) => b.id === id);
   if (equipmentIndex !== -1) {
@@ -1625,7 +1720,7 @@ app.get('/api/calculations/:calculationId', (req: express.Request, res: express.
 });
 
 app.post('/api/calculations/create-calculation', (req: express.Request, res: express.Response) => {
-  const { employee, date, amount, description, salary } = req.body;
+  const { employee, date, amount, description, salary, month, year } = req.body;
   const newCalculation = {
     id: String(calculations.items.length + 1),
     no: calculations.items.length + 1,
@@ -1634,6 +1729,8 @@ app.post('/api/calculations/create-calculation', (req: express.Request, res: exp
     amount,
     description,
     salary,
+    month,
+    year,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     createdBy: 'admin',
@@ -1644,7 +1741,7 @@ app.post('/api/calculations/create-calculation', (req: express.Request, res: exp
 });
 
 app.put('/api/calculations/update-calculation', (req: express.Request, res: express.Response) => {
-  const { id, employee, date, amount, description, salary } = req.body;
+  const { id, employee, date, amount, description, salary, month, year } = req.body;
   const calculationIndex = calculations.items.findIndex((b) => b.id === id);
   if (calculationIndex !== -1) {
     calculations.items[calculationIndex] = {
@@ -1654,6 +1751,8 @@ app.put('/api/calculations/update-calculation', (req: express.Request, res: expr
       amount,
       description,
       salary,
+      month,
+      year,
       updatedAt: new Date().toISOString(),
     };
     res.json(calculations.items[calculationIndex]);

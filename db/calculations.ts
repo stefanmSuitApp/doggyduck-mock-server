@@ -8,6 +8,8 @@ export const calculations = {
       amount: 1000,
       description: 'Description 1',
       salary: 5000,
+      month: 'October',
+      year: 2023,
       createdAt: '2023-10-01T12:00:00Z',
       updatedAt: '2023-10-01T12:00:00Z',
       createdBy: 'User 1',
